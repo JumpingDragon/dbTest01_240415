@@ -11,21 +11,20 @@ import pymysql  # mysql과 연동 시켜주는 라이브러리
 dbConn = pymysql.connect(host='localhost',user='root', password='12345', db='shopdb')
 # 파이썬과 mysql 간의 connection 생성
 
-sql = "SELECT * FROM membertbl"     # DB 에서 실행할 SQL 문 생성
+sql = "INSERT INTO membertbl VALUES ('Dog','박개똥','서울시 종로구')"     # DB 에서 실행할 SQL 문 생성
+# Primary Key 의 특징을 갖는 memberID 특징 때문에 이미 있으면 오류 뜬다.
 
 cur = dbConn.cursor()
-cur.execute(sql)  # 연결된 DB의 스키마에 지정된 SQL 문이 실행됨
+result = cur.execute(sql)  # 연결된 DB에 지정된 SQL 문이 실행됨
+print(result)  # insert, update, delete 문이 실행된 후 성공결과를 반환 -> 1 이면 성공!
 
-records = cur.fetchall()    # sql 문에서 실행된 select문의 결과를 records 라는 이름으로 받음
+if result == 1:
+    print("회원 가입이 성공하였습니다!")
 
-print(records)  # tuple 형식으로 나옴. tuple의 특징은 수정 불가.
-print(records[0])  # 특정 레코드
-print(records[0][1])  # 특정 레코드
-
-for member in records:
-    print(member)       # 레코드 단위로 출력
-    print(member[1])    #
+# records = cur.fetchall()    # insert  into 는 돌려받을 게 없음
 
 # dbConn의 사용이 종료된 후에는 반드시 닫아 줄 것! (close: cur 먼저 닫고 dbConn을 닫아야 한다)
 cur.close()
+
+dbConn.commit()  # insert, delete, update 문을 사용한 뒤에는 반드시 commit 함수를 호출해야 한다!
 dbConn.close()
